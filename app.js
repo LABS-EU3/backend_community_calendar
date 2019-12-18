@@ -1,9 +1,9 @@
-const express = require('express');
 require("dotenv").config();
+const express = require('express');
 
 const middleware = require('./utils/middlewares');
 const resources = require('./resources');
-const db = require('./database');
+const connectDB = require('./database/connect');
 
 const app = express();
 
@@ -11,16 +11,7 @@ middleware(app);
 
 app.use(resources);
 
-(async () => {
-  try {
-    const conn = await db();
-    if (conn) {
-      console.log('connected to database');
-    }
-  } catch (e) {
-     console.log('Failed to connect to database');
-  }
-})();
+connectDB();
 
 // error handler
 app.use((err, req, res) => {
