@@ -3,7 +3,7 @@ const express = require('express');
 
 const middleware = require('./utils/middlewares');
 const resources = require('./resources');
-const connectDB = require('./database/connect');
+const connectDB = require('./database');
 
 const app = express();
 
