@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
 
-const dbConfig = require('../config/dbConfig');
+const dbConfig = require("../config/dbConfig");
 
 module.exports = () => {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     let url = "";
 
     switch (process.env.ENVIRONMENT) {
