@@ -10,6 +10,10 @@ module.exports = function validateUser(user) {
       .min(2)
       .max(80)
       .required(),
+    username: Joi.string()
+      .min(2)
+      .max(80)
+      .required(),
     email: Joi.string()
       .min(2)
       .max(80)

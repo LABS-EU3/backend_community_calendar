@@ -1,10 +1,11 @@
 const bcrypt = require("bcryptjs");
 const validate = require("../../resources/users/users.validation");
+const Auth = require("./auth");
 const { genSaltSync, hashSync } = bcrypt;
 
 module.exports = function(model) {
   return {
-    createUser: async function(req, res) {
+    async createUser(req, res) {
       const { error } = validate(req.body);
 
       if (error) {
@@ -12,7 +13,7 @@ module.exports = function(model) {
           .status(422)
           .json({ status: 422, error: error.details[0].message });
       }
-      const { first_name, last_name, email, password } = req.body;
+      const { first_name, last_name, username, email, password } = req.body;
       let doc = await model.findOne({ email: req.body.email });
       if (doc) {
         return res.status(400).send("That user already exisits!");
@@ -21,20 +22,32 @@ module.exports = function(model) {
         const salt = genSaltSync(10);
         const hash = hashSync(password, salt);
         doc = new model({
-          first_name: first_name,
-          last_name: last_name,
-          email: email,
+          first_name,
+          last_name,
+          username,
+          email,
           password: hash
         });
+        const payload = {
+          id: doc.id,
+          username: doc.username
+        };
+
+        const options = {
+          expiresIn: "24h"
+        };
+
+        const token = Auth(payload, options);
         await doc.save();
+
         res.status(201).json({
           status: 201,
-          message: "Created successfully",
-          user: doc
+          message: "User Created successfully",
+          token
         });
       }
-      return res.status(400).json({
-        status: 400,
+      return res.status(500).json({
+        status: 500,
         errors: "Something went wrong, try again"
       });
     }
