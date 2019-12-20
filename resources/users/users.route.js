@@ -7,4 +7,6 @@ router.route("/");
 
 router.route("/register").post(userController.register);
 
+router.route("/signin").post(userController.signin);
+
 module.exports = router;
