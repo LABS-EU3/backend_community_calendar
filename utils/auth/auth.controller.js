@@ -6,7 +6,7 @@ const { genSaltSync, hashSync } = bcrypt;
 module.exports = function(model) {
   return {
     async createUser(req, res) {
-      const { error } = validate(req.body);
+      const { error } = validate.validateUser(req.body);
 
       if (error) {
         return res
@@ -50,6 +50,23 @@ module.exports = function(model) {
         status: 500,
         errors: "Something went wrong, try again"
       });
+    },
+    async logIn(req, res) {
+      const { error } = validate.validateLogin(req.body);
+
+      if (error) {
+        return res
+          .status(422)
+          .json({ status: 422, error: error.details[0].message });
+      }
+      const { username, password } = req.body;
+      let user = await model.findOne({ username });
+      if (!user) {
+        return res.status(400).send("Invalid username or password");
+      }
+      return res.status(200).json({ user });
+      // const correctPassword = awaitbcrypt.compare({})
+      
     }
   };
 };
