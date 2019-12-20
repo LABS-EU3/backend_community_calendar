@@ -64,9 +64,12 @@ module.exports = function(model) {
       if (!user) {
         return res.status(400).send("Invalid username or password");
       }
+      const userPassword = await bcrypt.compare(password, user.password);
+      if (!userPassword) {
+        return res.status(400).send("Incorrect email or password.");
+      }
       return res.status(200).json({ user });
-      // const correctPassword = awaitbcrypt.compare({})
-      
+      // const Password = awaitbcrypt.compare({})
     }
   };
 };
