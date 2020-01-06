@@ -76,10 +76,10 @@ export default function ScrapeEvents() {
       dataSet.push({
         date: datesArray[i],
         title: newTitles[i],
-        link: linksArray[i],
-        image_link: imagesArray[i],
-        Location: locationsArray[i],
-        Price: pricesArray[i],
+        eventId: linksArray[i],
+        imageLink: imagesArray[i],
+        location: locationsArray[i],
+        price: pricesArray[i],
         eventLink: eventLinksArray[i],
       });
     }
