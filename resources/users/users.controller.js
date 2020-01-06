@@ -12,5 +12,8 @@ module.exports = generateController(Users, {
   },
   register: function(req, res, next) {
     authController(Users).createUser(req, res, next);
+  },
+  signin: function (req, res) {
+    authController(Users).logIn(req, res);
   }
 });

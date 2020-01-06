@@ -15,7 +15,9 @@ module.exports = function(model) {
             .json({ status: 422, error: error.details[0].message });
         }
         const { first_name, last_name, username, email, password } = req.body;
+
         let doc = await model.findOne({ email, username });
+
         if (doc) {
           return res.status(409).send("user already exisits!");
         } else {
@@ -29,6 +31,7 @@ module.exports = function(model) {
             email,
             password: hash
           });
+
           const payload = {
             id: doc.id,
             username: doc.username
@@ -60,6 +63,31 @@ module.exports = function(model) {
           });
         }
       }
+    },
+    async logIn(req, res) {
+      const { error } = validate.validateLogin(req.body);
+
+      if (error) {
+        return res
+          .status(422)
+          .json({ status: 422, error: error.details[0].message });
+      }
+
+      const { username, password } = req.body;
+
+      let user = await model.findOne({ username });
+
+      if (!user) {
+        return res.status(400).send("Invalid username or password");
+      }
+
+      const userPassword = await bcrypt.compare(password, user.password);
+
+      if (!userPassword) {
+        return res.status(400).send("Incorrect email or password.");
+      }
+
+      return res.status(200).json({ user });
     }
   };
 };
