@@ -39,6 +39,7 @@ export default function ScrapeEvents() {
     const images = $('.eds-max-img').toArray();
     const locations = $('.card-text--truncated__one').toArray();
     const prices = $('.eds-media-card-content__flag').toArray();
+    const eventLinksArray = []; 
 
     images.forEach((image) => {
       const imageLink = $(image).attr('src');
@@ -66,6 +67,7 @@ export default function ScrapeEvents() {
       const start = fullLink.indexOf('ts-') + 3;
       const end = fullLink.indexOf('?') - fullLink.indexOf('ts-') - 3;
       linksArray.push(fullLink.substr(start, end));
+      eventLinksArray.push(fullLink);
     });
 
     const newTitles = titlesArray.filter((str) => /\S/.test(str));
@@ -74,10 +76,11 @@ export default function ScrapeEvents() {
       dataSet.push({
         date: datesArray[i],
         title: newTitles[i],
-        link: linksArray[i],
-        image_link: imagesArray[i],
-        Location: locationsArray[i],
-        Price: pricesArray[i],
+        eventId: linksArray[i],
+        imageLink: imagesArray[i],
+        location: locationsArray[i],
+        price: pricesArray[i],
+        eventLink: eventLinksArray[i],
       });
     }
 
