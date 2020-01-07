@@ -1,8 +1,6 @@
-/* eslint-disable no-console */
 /* eslint-disable no-plusplus */
 const cheerio = require('cheerio');
 const axios = require("axios");
-
 // For Event link reference, add scraped ID to visit the event page
 // const linkFormat = `https://www.eventbrite.com/e/neurips-meetup-port-harcourt-tickets-${'link'}?aff=ebdssbdestsearch`;
 // variable samples
@@ -10,21 +8,20 @@ const science = 'science-and-tech';
 // const travel = 'travel-and-outdoor';
 const locationSample = 'port-harcourt';
 // variable samples
+const fetchData = async () => {
+  const result = await axios({
+    method: "get",
+    url: `https://www.eventbrite.com/d/nigeria--${locationSample}/${science}--events/`,
+    json: true,
+    headers: { 'User-Agent': 'Mozilla/5.0' },
+  });
+  return cheerio.load(result.data, {
+    normalizeWhitespace: false,
+  });
+};
 
-export default function ScrapeEvents() {
-  const fetchData = async () => {
-    const result = await axios({
-      method: "get",
-      url: `https://www.eventbrite.com/d/nigeria--${locationSample}/${science}--events/`,
-      json: true,
-      headers: { 'User-Agent': 'Mozilla/5.0' },
-    });
-    return cheerio.load(result.data, {
-      normalizeWhitespace: false,
-    });
-  };
-
-  fetchData().then(($) => {
+const ScrapeEvents = new Promise((resolve, reject) => {
+  return fetchData().then(($) => {
     const datesArray = [];
     const titlesArray = [];
     const linksArray = [];
@@ -32,36 +29,29 @@ export default function ScrapeEvents() {
     const locationsArray = [];
     const pricesArray = [];
     const dataSet = [];
-
     const dates = $('.eds-text-color--primary-brand').toArray();
     const titles = $('.eds-media-card-content__action-link').toArray();
     const links = $('.eds-media-card-content__action-link').toArray();
     const images = $('.eds-max-img').toArray();
     const locations = $('.card-text--truncated__one').toArray();
     const prices = $('.eds-media-card-content__flag').toArray();
-    const eventLinksArray = []; 
-
+    const eventLinksArray = [];
     images.forEach((image) => {
       const imageLink = $(image).attr('src');
       imagesArray.push(imageLink);
     });
-
     dates.forEach((item) => {
       datesArray.push($(item).text());
     });
-
     titles.forEach((title) => {
       titlesArray.push($(title).text());
     });
-
     locations.forEach((location) => {
       locationsArray.push($(location).text());
     });
-
     prices.forEach((price) => {
       pricesArray.push($(price).text());
     });
-
     links.forEach((link) => {
       const fullLink = $(link).attr('href');
       const start = fullLink.indexOf('ts-') + 3;
@@ -69,21 +59,27 @@ export default function ScrapeEvents() {
       linksArray.push(fullLink.substr(start, end));
       eventLinksArray.push(fullLink);
     });
-
     const newTitles = titlesArray.filter((str) => /\S/.test(str));
-
-    for (let i = 0; i < datesArray.length; i++) {
+    const uniqueTitles = Array.from(new Set(newTitles));
+    const uniqueDates = Array.from(new Set(datesArray));
+    const uniqueLinkIds = Array.from(new Set(linksArray));
+    const uniqueImageLinks = Array.from(new Set(imagesArray));
+    const uniqueLocations = Array.from(new Set(locationsArray));
+    const uniquePrices = Array.from(new Set(pricesArray));
+    const uniqueEventLinks = Array.from(new Set(eventLinksArray));
+    for (let i = 0; i < uniqueDates.length; i++) {
       dataSet.push({
-        date: datesArray[i],
-        title: newTitles[i],
-        eventId: linksArray[i],
-        imageLink: imagesArray[i],
-        location: locationsArray[i],
-        price: pricesArray[i],
-        eventLink: eventLinksArray[i],
+        date: uniqueDates[i],
+        title: uniqueTitles[i],
+        eventId: uniqueLinkIds[i],
+        imageLink: uniqueImageLinks[i],
+        location: uniqueLocations[i],
+        price: uniquePrices[i],
+        eventLink: uniqueEventLinks[i],
       });
     }
+    resolve(dataSet);
+  }).catch((error) => reject(error));
+});
 
-    return dataSet;
-  }).catch((error) => console.log(error));
-}
+module.exports = ScrapeEvents;
