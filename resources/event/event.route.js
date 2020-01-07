@@ -5,14 +5,10 @@ const eventController = require("./event.controller");
 
 router.get('/fetch-events', async (req, res, next) => {
   try {
-    eventController.addScrapedEvent().then(() => {
-      // const event = await eventController.findEvent();
-      eventController.findEvent().then((event) => {
-        res
-          .status(200)
-          .json(event);
-      });
-    });
+    const events = await eventController.addScrapedEvent();
+    res
+      .status(200)
+      .json(events);
   } catch (error) {
     next(new Error(error));
   }
