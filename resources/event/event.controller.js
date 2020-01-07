@@ -1,10 +1,12 @@
+const Event = require("./event.model");
+const ScrapeEvents = require("../../utils/webScraper");
 
-const mongoose = require("mongoose");
-const EventSchema = require('./event.model');
-
-const addScrapedEvent = (scrappedEventsArray) => {
-  scrappedEventsArray.forEach(async (event) => {
-    const data = new EventSchema({
+const addScrapedEvent = async () => {
+  console.log('scrappedEventsArray runs');
+  const scrappedEventsArray = await ScrapeEvents;
+  await scrappedEventsArray.forEach(async (event) => {
+    console.log(event);
+    const data = new Event({
       name: event.title,
       scrapedEventDate: event.date,
       scrapedEventId: event.eventId,
@@ -17,8 +19,13 @@ const addScrapedEvent = (scrappedEventsArray) => {
   });
 };
 
-EventSchema.statics.addScrapedEvent = addScrapedEvent;
+const findEvent = async () => {
+  const events = await Event.find();
+  // console.log(events);
+  return events;
+};
 
-const Event = mongoose.model('Event', EventSchema);
-
-export default Event;
+module.exports = {
+  addScrapedEvent,
+  findEvent,
+};
