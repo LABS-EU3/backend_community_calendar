@@ -1,13 +1,13 @@
 require("dotenv").config();
 const express = require("express");
 
-const middleware = require("./utils/middlewares");
+const expressMiddlewares = require("./utils/middlewares");
 const resources = require("./resources");
 const connectDB = require("./database");
 
 const app = express();
 
-middleware(app);
+expressMiddlewares(app);
 
 app.use(resources);
 
