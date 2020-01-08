@@ -1,26 +1,24 @@
 const Event = require("./event.model");
-const ScrapeEvents = require("../../utils/webScraper");
-
-const addScrapedEvent = async () => {
-  const scrappedEventsArray = await ScrapeEvents;
-  await scrappedEventsArray.forEach(async (event) => {
-    const data = new Event({
-      name: event.title,
-      scrapedEventDate: event.date,
-      scrapedEventId: event.eventId,
-      scrapedEventLink: event.eventLink,
-      imageUrl: event.imageLink,
-      location: event.location,
-      price: event.price,
-    });
-    await data.save();
-  });
-  return scrappedEventsArray;
-};
+const scrapeEvents = require("../../utils/webScraper");
 
 const findEvent = async () => {
   const events = await Event.find();
   return events;
+};
+
+const addScrapedEvent = async () => {
+  const scrappedEventsArray = await scrapeEvents;
+  if (scrappedEventsArray.length > 0) {
+    await Event.insertMany(scrappedEventsArray, (error, doc) => {
+      if (error) {
+        return error;
+      }
+      return doc;
+    });
+  } else {
+    return false;
+  }
+  return scrappedEventsArray;
 };
 
 module.exports = {

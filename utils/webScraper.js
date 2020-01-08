@@ -4,14 +4,14 @@ const axios = require("axios");
 // For Event link reference, add scraped ID to visit the event page
 // const linkFormat = `https://www.eventbrite.com/e/neurips-meetup-port-harcourt-tickets-${'link'}?aff=ebdssbdestsearch`;
 // variable samples
-const science = 'science-and-tech';
+const eventType = 'science-and-tech';
 // const travel = 'travel-and-outdoor';
-const locationSample = 'port-harcourt';
+const userLocation = 'port-harcourt';
 // variable samples
 const fetchData = async () => {
   const result = await axios({
     method: "get",
-    url: `https://www.eventbrite.com/d/nigeria--${locationSample}/${science}--events/`,
+    url: `https://www.eventbrite.com/d/nigeria--${userLocation}/${eventType}--events/`,
     json: true,
     headers: { 'User-Agent': 'Mozilla/5.0' },
   });
@@ -20,7 +20,7 @@ const fetchData = async () => {
   });
 };
 
-const ScrapeEvents = new Promise((resolve, reject) => {
+const scrapeEvents = new Promise((resolve, reject) => {
   return fetchData().then(($) => {
     const datesArray = [];
     const titlesArray = [];
@@ -69,17 +69,17 @@ const ScrapeEvents = new Promise((resolve, reject) => {
     const uniqueEventLinks = Array.from(new Set(eventLinksArray));
     for (let i = 0; i < uniqueDates.length; i++) {
       dataSet.push({
-        date: uniqueDates[i],
-        title: uniqueTitles[i],
-        eventId: uniqueLinkIds[i],
-        imageLink: uniqueImageLinks[i],
+        eventDate: uniqueDates[i],
+        name: uniqueTitles[i],
+        scrapedEventId: uniqueLinkIds[i],
+        imageUrl: uniqueImageLinks[i],
         location: uniqueLocations[i],
         price: uniquePrices[i],
-        eventLink: uniqueEventLinks[i],
+        scrapedEventLink: uniqueEventLinks[i],
       });
     }
     resolve(dataSet);
   }).catch((error) => reject(error));
 });
 
-module.exports = ScrapeEvents;
+module.exports = scrapeEvents;

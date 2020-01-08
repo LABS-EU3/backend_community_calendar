@@ -10,7 +10,7 @@ const EventSchema = new Schema({
     minlength: 2,
     unique: true,
   },
-  scrapedEventDate: {
+  eventDate: {
     type: Date,
   },
   scrapedEventId: {
