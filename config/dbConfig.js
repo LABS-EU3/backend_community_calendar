@@ -18,7 +18,7 @@ switch (process.env.NODE_ENV) {
     break;
 
   default:
-    connectionUrl = process.env.DATABASE_URL_DEVELOPMENT;
+    connectionUrl = process.env.DATABASE_URL_DEVELOPMENT || 'mongodb://localhost:27017/community_calender';
 }
 
 module.exports = connectionUrl;

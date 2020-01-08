@@ -6,8 +6,8 @@ const findEvent = async () => {
   return events;
 };
 
-const addScrapedEvent = async () => {
-  const scrappedEventsArray = await scrapeEvents;
+const addScrapedEvent = async (userCountry, userCity, eventType) => {
+  const scrappedEventsArray = await scrapeEvents(userCountry, userCity, eventType);
   if (scrappedEventsArray.length > 0) {
     await Event.insertMany(scrappedEventsArray, (error, doc) => {
       if (error) {
