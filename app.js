@@ -7,6 +7,7 @@ const connectDB = require("./database");
 
 const app = express();
 
+app.use(express.json());
 middleware(app);
 
 app.use(resources);
