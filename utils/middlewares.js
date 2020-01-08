@@ -7,7 +7,7 @@ const CORS_ORIGIN_WHITELIST = ['http://localhost:3000'];
 
 const corsOptions = {
   origin(origin, callback) {
-    if (CORS_ORIGIN_WHITELIST.indexOf(origin) !== -1) {
+    if (CORS_ORIGIN_WHITELIST.indexOf(origin) !== -1 || !origin) {
       callback(null, true);
     } else {
       callback(new Error(`${origin} is not allowed by CORS`));
