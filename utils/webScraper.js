@@ -44,7 +44,9 @@ const scrapeEvents = (userCountry, userCity, eventType) => new Promise((resolve,
       datesArray.push($(item).text());
     });
     titles.forEach((title) => {
-      titlesArray.push($(title).text());
+      const fullTitle = $(title).text();
+      const splitTitle = fullTitle.substring(0, (fullTitle.length/2));
+      titlesArray.push(splitTitle);
     });
     locations.forEach((location) => {
       locationsArray.push($(location).text());
