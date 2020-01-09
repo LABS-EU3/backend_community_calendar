@@ -1,19 +1,18 @@
-var generateController = require("../../utils/generateControllers");
+const generateController = require("../../utils/generateControllers");
 const Users = require("./users.model");
 const authController = require("../../utils/auth/auth.controller");
 
 module.exports = generateController(Users, {
-  getAll: function(req, res, next) {
-    console.log("hello world");
-    Users.find({}, function(err, users) {
+  getAll(req, res, next) {
+    Users.find({}, (err, users) => {
       if (err) return next(err);
-      res.json(users);
+      return res.json(users);
     });
   },
-  register: function(req, res, next) {
+  register(req, res, next) {
     authController(Users).createUser(req, res, next);
   },
-  signin: function (req, res) {
+  signin(req, res) {
     authController(Users).logIn(req, res);
-  }
+  },
 });
