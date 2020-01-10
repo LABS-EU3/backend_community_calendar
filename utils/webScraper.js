@@ -4,14 +4,14 @@ const axios = require("axios");
 // For Event link reference, add scraped ID to visit the event page
 // const linkFormat = `https://www.eventbrite.com/e/neurips-meetup-port-harcourt-tickets-${'link'}?aff=ebdssbdestsearch`;
 // variable samples
-const eventType = 'science-and-tech';
+
 // const travel = 'travel-and-outdoor';
-const userLocation = 'port-harcourt';
+// const userLocation = 'port-harcourt';
 // variable samples
-const fetchData = async () => {
+const fetchData = async (userCountry, userCity, eventType) => {
   const result = await axios({
     method: "get",
-    url: `https://www.eventbrite.com/d/nigeria--${userLocation}/${eventType}--events/`,
+    url: `https://www.eventbrite.com/d/${userCountry}--${userCity}/${eventType}--events/`,
     json: true,
     headers: { 'User-Agent': 'Mozilla/5.0' },
   });
@@ -20,8 +20,8 @@ const fetchData = async () => {
   });
 };
 
-const scrapeEvents = new Promise((resolve, reject) => {
-  return fetchData().then(($) => {
+const scrapeEvents = (userCountry, userCity, eventType) => new Promise((resolve, reject) => {
+  return fetchData(userCountry, userCity, eventType).then(($) => {
     const datesArray = [];
     const titlesArray = [];
     const linksArray = [];
@@ -44,7 +44,9 @@ const scrapeEvents = new Promise((resolve, reject) => {
       datesArray.push($(item).text());
     });
     titles.forEach((title) => {
-      titlesArray.push($(title).text());
+      const fullTitle = $(title).text();
+      const splitTitle = fullTitle.substring(0, (fullTitle.length/2));
+      titlesArray.push(splitTitle);
     });
     locations.forEach((location) => {
       locationsArray.push($(location).text());
