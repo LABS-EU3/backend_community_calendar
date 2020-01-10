@@ -14,6 +14,7 @@ module.exports = {
   },
   rules: {
     quotes: 0,
-    'linebreak-style': 0,
+    "linebreak-style": 0,
+    "object-curly-newline": 0
   }
 };

@@ -23,11 +23,11 @@ module.exports = {
       password: Joi.string()
         .min(5)
         .max(80)
-        .required()
+        .required(),
     };
     return Joi.validate(user, schema);
   },
-  validateLogin(user){
+  validateLogin(user) {
     const schema = {
       username: Joi.string()
         .min(2)
@@ -36,8 +36,8 @@ module.exports = {
       password: Joi.string()
         .min(5)
         .max(80)
-        .required()
+        .required(),
     };
-    return Joi.validate(user,schema)
-  }
+    return Joi.validate(user, schema);
+  },
 };
