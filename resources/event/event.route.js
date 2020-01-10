@@ -3,7 +3,7 @@ const express = require("express");
 const router = express.Router();
 const eventController = require("./event.controller");
 
-router.get('/fetch-events', async (req, res, next) => {
+router.post('/fetch-events', async (req, res, next) => {
   try {
     const { userCity, userCountry, eventType } = req.body;
     const events = await eventController.addScrapedEvent(userCountry, userCity, eventType);
