@@ -5,7 +5,8 @@ const eventController = require("./event.controller");
 
 router.get('/fetch-events', async (req, res, next) => {
   try {
-    const events = await eventController.addScrapedEvent();
+    const { userCity, userCountry, eventType } = req.body;
+    const events = await eventController.addScrapedEvent(userCountry, userCity, eventType);
     if (!events) {
       res
         .status(500)
