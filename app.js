@@ -1,7 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 
-const middleware = require("./utils/middlewares");
+const expressMiddlewares = require("./utils/middlewares");
 const resources = require("./resources");
 const connectDB = require("./database");
 
@@ -14,15 +14,27 @@ app.use(resources);
 
 connectDB();
 
-// error handler
-app.use((err, req, res) => {
+app.get('/', (req, res, next) => {
+  try {
+    res
+      .status(200)
+      .json({
+        message: 'Welcome to Community Calendar API',
+      });
+  } catch (error) {
+    next(new Error(error));
+  }
+});
+
+app.use((err, req, res, next) => {
   // set locals, only providing error in development.
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  res.status(err.status).json({ message: err.message });
+  res
+    .status(err.status || 500)
+    .json({ message: err.message });
+  next();
 });
 
 module.exports = app;
