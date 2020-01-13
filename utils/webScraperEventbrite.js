@@ -79,6 +79,7 @@ const scrapeEvents = (userCountry, userCity, eventType) => new Promise((resolve,
         location: uniqueLocations[i],
         price: uniquePrices[i],
         scrapedEventLink: uniqueEventLinks[i],
+        source: 'eventbrite',
       });
     }
     resolve(dataSet);

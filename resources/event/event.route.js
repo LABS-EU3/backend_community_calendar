@@ -2,7 +2,6 @@ const express = require("express");
 
 const router = express.Router();
 const eventController = require("./event.controller");
-const getDescription = require("../../utils/scrapeEventbriteDesc");
 
 router.post('/fetch-events', async (req, res, next) => {
   try {
@@ -23,8 +22,8 @@ router.post('/fetch-events', async (req, res, next) => {
 
 router.post('/fetch-description', async (req, res, next) => {
   try {
-    const { link } = req.body;
-    const events = await getDescription(link);
+    const { link, eventId } = req.body;
+    const events = await eventController.addDescription(eventId, link);
     if (!events) {
       res
         .status(404)

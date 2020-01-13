@@ -29,6 +29,12 @@ const EventSchema = new Schema({
   price: {
     type: String,
   },
+  description: {
+    type: String,
+  },
+  source: {
+    type: String,
+  },
 }, { timestamps: true });
 
 EventSchema.plugin(uniqueValidator);
