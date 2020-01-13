@@ -2,6 +2,7 @@ const express = require("express");
 
 const router = express.Router();
 const eventController = require("./event.controller");
+const getDescription = require("../../utils/scrapeEventbriteDesc");
 
 router.post('/fetch-events', async (req, res, next) => {
   try {
@@ -11,6 +12,23 @@ router.post('/fetch-events', async (req, res, next) => {
       res
         .status(500)
         .json('Events could not be inserted or they already exist');
+    }
+    res
+      .status(200)
+      .json(events);
+  } catch (error) {
+    next(new Error(error));
+  }
+});
+
+router.post('/fetch-description', async (req, res, next) => {
+  try {
+    const { link } = req.body;
+    const events = await getDescription(link);
+    if (!events) {
+      res
+        .status(404)
+        .json('No description found, check sent link');
     }
     res
       .status(200)
