@@ -2,6 +2,8 @@
 /* eslint-disable no-plusplus */
 const cheerio = require('cheerio');
 const axios = require("axios");
+
+const eventBriteDateFormatter = require("./eventBriteDateFormatter");
 // For Event link reference, add scraped ID to visit the event page
 // const linkFormat = `https://www.eventbrite.com/e/neurips-meetup-port-harcourt-tickets-${'link'}?aff=ebdssbdestsearch`;
 // variable samples
@@ -42,7 +44,11 @@ const scrapeEvents = (userCountry, userCity, eventType) => new Promise((resolve,
       imagesArray.push(imageLink);
     });
     dates.forEach((item) => {
-      datesArray.push($(item).text());
+      if ($(item).text().includes('Today') || $(item).text().includes('Tomorrow') || $(item).text().includes(' + ')) {
+        datesArray.push(eventBriteDateFormatter($(item).text()));
+      } else {
+        datesArray.push($(item).text());
+      }
     });
     titles.forEach((title) => {
       const fullTitle = $(title).text();

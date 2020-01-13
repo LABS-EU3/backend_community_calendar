@@ -1,6 +1,6 @@
 const Event = require("./event.model");
-const scrapeEvents = require("../../utils/webScraperEventbrite");
-const scrapeDescription = require("../../utils/scrapeEventbriteDesc");
+const scrapeEvents = require("../../utils/eventScraper/webScraperEventbrite");
+const scrapeDescription = require("../../utils/eventScraper/scrapeEventbriteDesc");
 
 const findEvent = async () => {
   const events = await Event.find();
