@@ -1,3 +1,4 @@
+/* eslint-disable arrow-body-style */
 /* eslint-disable no-plusplus */
 const cheerio = require('cheerio');
 const axios = require("axios");
@@ -45,7 +46,7 @@ const scrapeEvents = (userCountry, userCity, eventType) => new Promise((resolve,
     });
     titles.forEach((title) => {
       const fullTitle = $(title).text();
-      const splitTitle = fullTitle.substring(0, (fullTitle.length/2));
+      const splitTitle = fullTitle.substring(0, (fullTitle.length / 2));
       titlesArray.push(splitTitle);
     });
     locations.forEach((location) => {
@@ -78,6 +79,7 @@ const scrapeEvents = (userCountry, userCity, eventType) => new Promise((resolve,
         location: uniqueLocations[i],
         price: uniquePrices[i],
         scrapedEventLink: uniqueEventLinks[i],
+        source: 'eventbrite',
       });
     }
     resolve(dataSet);
