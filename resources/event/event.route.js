@@ -20,4 +20,21 @@ router.post('/fetch-events', async (req, res, next) => {
   }
 });
 
+router.post('/fetch-description', async (req, res, next) => {
+  try {
+    const { link, eventId } = req.body;
+    const events = await eventController.addDescription(eventId, link);
+    if (!events) {
+      res
+        .status(404)
+        .json('No description found, check sent link');
+    }
+    res
+      .status(200)
+      .json(events);
+  } catch (error) {
+    next(new Error(error));
+  }
+});
+
 module.exports = router;

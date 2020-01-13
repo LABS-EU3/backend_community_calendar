@@ -1,5 +1,6 @@
 const Event = require("./event.model");
-const scrapeEvents = require("../../utils/webScraper");
+const scrapeEvents = require("../../utils/webScraperEventbrite");
+const scrapeDescription = require("../../utils/scrapeEventbriteDesc");
 
 const findEvent = async () => {
   const events = await Event.find();
@@ -21,7 +22,24 @@ const addScrapedEvent = async (userCountry, userCity, eventType) => {
   return scrappedEventsArray;
 };
 
+const addDescription = async (eventId, link) => {
+  try {
+    const description = await scrapeDescription(link);
+    await Event.update(
+      { scrapedEventId: eventId },
+      {
+        $set: { description },
+      },
+    );
+
+    return description;
+  } catch (error) {
+    return false;
+  }
+};
+
 module.exports = {
   addScrapedEvent,
   findEvent,
+  addDescription,
 };
