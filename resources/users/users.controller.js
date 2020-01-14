@@ -1,6 +1,6 @@
 const generateController = require("../../utils/generateControllers");
 const Users = require("./users.model");
-const authController = require("../../utils/auth/auth.controller");
+const authController = require("./auth/auth.controller");
 
 module.exports = generateController(Users, {
   getAll(req, res, next) {

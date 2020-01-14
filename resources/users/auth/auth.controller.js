@@ -2,8 +2,8 @@
 /* eslint-disable consistent-return */
 /* eslint-disable func-names */
 const bcrypt = require("bcryptjs");
-const validate = require("../../resources/users/users.validation");
-const Auth = require("./auth");
+const validate = require("../users.validation");
+const AuthHelper = require("./auth");
 
 const { genSaltSync, hashSync } = bcrypt;
 
@@ -36,22 +36,12 @@ module.exports = function (Model) {
           password: hash,
         });
 
-        const payload = {
-          id: doc.id,
-          username: doc.username,
-        };
-
-        const options = {
-          expiresIn: "24h",
-        };
-
-        const token = Auth(payload, options);
         await doc.save();
 
         res.status(201).json({
           status: 201,
           message: "User Created successfully",
-          token,
+          user: AuthHelper.Auth.toAuthJSON(doc),
         });
       } catch (error) {
         if (error.message.includes("duplicate key error")) {
@@ -77,19 +67,21 @@ module.exports = function (Model) {
 
       const { username, password } = req.body;
 
-      const user = await Model.findOne({ username });
+      const userInDB = await Model.findOne({ username });
 
-      if (!user) {
+      if (!userInDB) {
         return res.status(400).send("Invalid username or password");
       }
 
-      const userPassword = await bcrypt.compare(password, user.password);
+      const userPassword = await bcrypt.compare(password, userInDB.password);
 
       if (!userPassword) {
         return res.status(400).send("Incorrect email or password.");
       }
 
-      return res.status(200).json({ user });
+      return res.status(200).json({
+        user: AuthHelper.Auth.toAuthJSON(userInDB),
+      });
     },
   };
 };
