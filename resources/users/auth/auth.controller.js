@@ -23,7 +23,7 @@ module.exports = function (Model) {
         let doc = await Model.findOne({ email, username });
 
         if (doc) {
-          return res.status(409).send("user already exisits!");
+          return res.status(409).send("user already exists!");
         }
         // Insert the new user if they do not exist yet
         const salt = genSaltSync(10);
@@ -40,7 +40,7 @@ module.exports = function (Model) {
 
         res.status(201).json({
           status: 201,
-          message: "User Created successfully",
+          message: "User created successfully",
           user: AuthHelper.Auth.toAuthJSON(doc),
         });
       } catch (error) {
