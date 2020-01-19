@@ -6,9 +6,10 @@ module.exports = {
     await favedEvent.save();
     return favedEvent;
   },
-  async deleteFav(savedFavId) {
+  async deleteFav(eventId, userId) {
     const deletedFav = await FavEvent.findOneAndDelete({
-      _id: savedFavId,
+      eventId,
+      userId,
     });
     return deletedFav;
   },

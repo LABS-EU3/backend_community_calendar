@@ -19,9 +19,9 @@ router.post('/', async (req, res) => {
 
 router.delete('/', async (req, res) => {
   try {
-    const { savedFavId } = req.body;
-    if (savedFavId !== undefined) {
-      const deletedFav = await favEventsController.deleteFav(savedFavId);
+    const { eventId, userId } = req.body;
+    if (eventId !== undefined && userId !== undefined) {
+      const deletedFav = await favEventsController.deleteFav(eventId, userId);
       if (!deletedFav) {
         throw new Error('Favorite event not found or could not be removed at this time. Please try again later');
       }
