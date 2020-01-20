@@ -25,10 +25,19 @@ const EventSchema = new Schema({
   location: {
     type: String,
   },
+  city: {
+    type: String,
+  },
+  country: {
+    type: String,
+  },
   price: {
     type: String,
   },
   description: {
+    type: String,
+  },
+  eventType: {
     type: String,
   },
   source: {

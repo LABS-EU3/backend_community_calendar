@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable arrow-body-style */
 /* eslint-disable no-plusplus */
 const cheerio = require('cheerio');
@@ -9,10 +10,10 @@ const axios = require("axios");
 // const travel = 'travel-and-outdoor';
 // const userLocation = 'port-harcourt';
 // variable samples
-const fetchData = async (userCountry, userCity, eventType) => {
+const fetchData = async (userCountry, userCity, eventType, startDate, endDate) => {
   const result = await axios({
     method: "get",
-    url: `https://www.eventbrite.com/d/${userCountry}--${userCity}/${eventType}--events/`,
+    url: `https://www.eventbrite.com/d/${userCountry}--${userCity}/${eventType}--events/?end_date=${endDate}&page=1&start_date=${startDate}`,
     json: true,
     headers: { 'User-Agent': 'Mozilla/5.0' },
   });
@@ -21,8 +22,8 @@ const fetchData = async (userCountry, userCity, eventType) => {
   });
 };
 
-const scrapeEvents = (userCountry, userCity, eventType) => new Promise((resolve, reject) => {
-  return fetchData(userCountry, userCity, eventType).then(($) => {
+const scrapeEvents = (userCountry, userCity, eventType, startDate, endDate) => new Promise((resolve, reject) => {
+  return fetchData(userCountry, userCity, eventType, startDate, endDate).then(($) => {
     const datesArray = [];
     const titlesArray = [];
     const linksArray = [];
