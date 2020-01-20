@@ -1,16 +1,18 @@
+/* eslint-disable func-names */
 module.exports = function (model, overrides) {
-    var controller = {
-        getAll: function (req, res, next) {
-            model.find({}, function (err, docs) {
-                if (err) next(err);
-                res.json(docs);
-            });
-        }
-    };
+  const controller = {
+    getAll(req, res, next) {
+      model.find({}, (err, docs) => {
+        if (err) next(err);
+        res.json(docs);
+      });
+    },
+  };
 
-    if (!overrides) {
-        overrides = {}
-    }
+  if (!overrides) {
+    // eslint-disable-next-line no-param-reassign
+    overrides = {};
+  }
 
-    return Object.assign({}, controller, overrides);
+  return { ...controller, ...overrides };
 };

@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const uniqueValidator = require('mongoose-unique-validator');
 
 const { Schema } = mongoose;
-
 const EventSchema = new Schema({
   name: {
     type: String,
