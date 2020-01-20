@@ -6,22 +6,17 @@ const favEventsController = require('./favEvents.controller');
 
 router.get('/', async (req, res) => {
   try {
-    const { u } = req.query;
-    if (typeof u === 'undefined') {
-      res.status(400).json('Please supply valid id in the query');
-    } else {
-      const favEventsId = await favEventsController.findFav(u);
-      if (!favEventsId) {
-        throw new Error('Favorite events could not be retrieved at this time. Please try again later');
-      }
-      const favEvents = await favEventsController.findEvents(favEventsId);
-      if (!favEvents) {
-        throw new Error('Favorite events could not be retrieved at this time. Please try again later');
-      }
-      res.status(200).json({ message: 'Favorite events retrieved successfully', favEvents });
+    const { userId } = req.query;
+    if (typeof userId === 'undefined') {
+      return res.status(400).json('Please supply valid user id in the query');
     }
+    const favEvents = await favEventsController.findFav(userId);
+    if (!favEvents.length) {
+      return res.status(404).json({ message: 'Favorite events not found' });
+    }
+    return res.status(200).json({ message: 'Favorite events retrieved successfully', favEvents });
   } catch (error) {
-    res.status(500).json(error.message);
+    return res.status(500).json(error.message);
   }
 });
 
