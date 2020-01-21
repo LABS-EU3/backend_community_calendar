@@ -25,7 +25,7 @@ const scrapeDescriptions = (link) => new Promise((resolve, reject) => {
 
     $('.js-d-scroll-to.listing-organizer-name.text-default').toArray().forEach((author) => {
       const posterText = $(author).text().replace(/(\r\n|\n|\t|\r)/gm, "");
-      poster = posterText;
+      poster = posterText.replace("by ", "");
     });
 
     const details = {
