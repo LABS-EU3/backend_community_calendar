@@ -45,7 +45,7 @@ const addDescription = async (eventId, link) => {
     await Event.update(
       { scrapedEventId: eventId },
       {
-        $set: { description },
+        $set: { description: description.description },
       },
     );
 
