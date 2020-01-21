@@ -2,6 +2,7 @@
 /* eslint-disable no-plusplus */
 const cheerio = require('cheerio');
 const axios = require("axios");
+const dateFormatter = require('./eventBriteDateFormatter.js');
 // For Event link reference, add scraped ID to visit the event page
 // const linkFormat = `https://www.eventbrite.com/e/neurips-meetup-port-harcourt-tickets-${'link'}?aff=ebdssbdestsearch`;
 // variable samples
@@ -43,10 +44,10 @@ const scrapeEvents = (userCountry, userCity, eventType) => new Promise((resolve,
     });
     dates.forEach((item) => {
       if ($(item).text().includes('Today') || $(item).text().includes('Tomorrow') || $(item).text().includes(' + ')) {
-        const text = $(item).text().split('+')[0];
-        datesArray.push(new Date(`${text} 2020`));
+        const text = dateFormatter($(item).text());
+        datesArray.push(new Date(`${text} ${new Date().getFullYear()}`));
       } else {
-        datesArray.push(new Date(`${$(item).text()} 2020`));
+        datesArray.push(new Date(`${$(item).text()} ${new Date().getFullYear()}`));
       }
     });
     titles.forEach((title) => {
