@@ -14,10 +14,10 @@ module.exports = {
         scrapedEventId: event.eventId,
       }, (err, doc) => {
         if (err) return false;
-        return doc._doc;
+        return doc;
       })),
     )
-      .then((modelArr) => modelArr.map((model) => model._doc));
+      .then((favEventsArr) => favEventsArr);
     return result;
   },
   async saveFav(eventId, userId) {
