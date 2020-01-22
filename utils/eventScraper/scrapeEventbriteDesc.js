@@ -16,13 +16,24 @@ const fetchData = async (link) => {
 const scrapeDescriptions = (link) => new Promise((resolve, reject) => {
   fetchData(link).then(($) => {
     let description = '';
+    let poster = '';
 
     $('.js-xd-read-more-contents.l-mar-top-3').toArray().forEach((desc) => {
       const descriptionText = $(desc).text().replace(/(\r\n|\n|\t|\r)/gm, "");
       description = descriptionText;
     });
 
-    resolve(description);
+    $('.js-d-scroll-to.listing-organizer-name.text-default').toArray().forEach((author) => {
+      const posterText = $(author).text().replace(/(\r\n|\n|\t|\r)/gm, "");
+      poster = posterText.replace("by ", "");
+    });
+
+    const details = {
+      author: poster,
+      description,
+    };
+
+    resolve(details);
   }).catch((error) => reject(error));
 });
 

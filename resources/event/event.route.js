@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 const express = require("express");
 
 const router = express.Router();
@@ -27,11 +28,29 @@ router.post('/fetch-description', async (req, res, next) => {
     if (!events) {
       res
         .status(404)
-        .json('No description found, check sent link');
+        .json('No description available for this event');
     }
     res
       .status(200)
       .json(events);
+  } catch (error) {
+    next(new Error(error));
+  }
+});
+
+router.post('/fetch-date', async (req, res, next) => {
+  try {
+    const { userCity, userCountry, startDate, endDate, eventType } = req.body;
+    const dbUpdate = await eventController.updateEventsByDates(userCountry, userCity, eventType, startDate, endDate);
+
+    if (!dbUpdate) {
+      res
+        .status(404)
+        .json('No events found for this date');
+    }
+    res
+      .status(200)
+      .json(dbUpdate);
   } catch (error) {
     next(new Error(error));
   }

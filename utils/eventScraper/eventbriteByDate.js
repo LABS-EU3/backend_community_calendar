@@ -1,8 +1,8 @@
+/* eslint-disable max-len */
 /* eslint-disable arrow-body-style */
 /* eslint-disable no-plusplus */
 const cheerio = require('cheerio');
 const axios = require("axios");
-const dateFormatter = require('./eventBriteDateFormatter.js');
 // For Event link reference, add scraped ID to visit the event page
 // const linkFormat = `https://www.eventbrite.com/e/neurips-meetup-port-harcourt-tickets-${'link'}?aff=ebdssbdestsearch`;
 // variable samples
@@ -10,10 +10,10 @@ const dateFormatter = require('./eventBriteDateFormatter.js');
 // const travel = 'travel-and-outdoor';
 // const userLocation = 'port-harcourt';
 // variable samples
-const fetchData = async (userCountry, userCity, eventType) => {
+const fetchData = async (userCountry, userCity, eventType, startDate, endDate) => {
   const result = await axios({
     method: "get",
-    url: `https://www.eventbrite.com/d/${userCountry}--${userCity}/${eventType}--events/`,
+    url: `https://www.eventbrite.com/d/${userCountry}--${userCity}/${eventType}--events/?end_date=${endDate}&page=1&start_date=${startDate}`,
     json: true,
     headers: { 'User-Agent': 'Mozilla/5.0' },
   });
@@ -22,8 +22,8 @@ const fetchData = async (userCountry, userCity, eventType) => {
   });
 };
 
-const scrapeEvents = (userCountry, userCity, eventType) => new Promise((resolve, reject) => {
-  return fetchData(userCountry, userCity, eventType).then(($) => {
+const scrapeEvents = (userCountry, userCity, eventType, startDate, endDate) => new Promise((resolve, reject) => {
+  return fetchData(userCountry, userCity, eventType, startDate, endDate).then(($) => {
     const datesArray = [];
     const titlesArray = [];
     const linksArray = [];
@@ -44,10 +44,10 @@ const scrapeEvents = (userCountry, userCity, eventType) => new Promise((resolve,
     });
     dates.forEach((item) => {
       if ($(item).text().includes('Today') || $(item).text().includes('Tomorrow') || $(item).text().includes(' + ')) {
-        const text = dateFormatter($(item).text());
-        datesArray.push(new Date(`${text} ${new Date().getFullYear()}`));
+        const text = $(item).text().split('+')[0];
+        datesArray.push(new Date(`${text} 2020`));
       } else {
-        datesArray.push(new Date(`${$(item).text()} ${new Date().getFullYear()}`));
+        datesArray.push(new Date(`${$(item).text()} 2020`));
       }
     });
     titles.forEach((title) => {
