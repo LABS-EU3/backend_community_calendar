@@ -3,7 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
 
-const CORS_ORIGIN_WHITELIST = ['http://localhost:3000', 'https://comcalendar.now.sh', 'https://frontendcommunitycalendar.comcalender.now.sh'];
+const CORS_ORIGIN_WHITELIST = ['http://localhost:3000', 'https://comcalendar.now.sh', 'https://comcal.now.sh', 'https://frontendcommunitycalendar.comcalender.now.sh'];
 
 const corsOptions = {
   origin(origin, callback) {
