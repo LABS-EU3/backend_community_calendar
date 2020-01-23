@@ -45,7 +45,7 @@ const scrapeDescription = (link) => new Promise((resolve, reject) => {
       dataSet.push({
         description: descArray[i],
         location: `${locationsArray[i]}`,
-        host: hostArray[i],
+        author: hostArray[i],
       });
     }
 
