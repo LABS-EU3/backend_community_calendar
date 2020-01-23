@@ -3,10 +3,11 @@
 const cheerio = require('cheerio');
 const axios = require("axios");
 
-const fetchData = async (userCity, userCountry) => {
+// type can be tech
+const fetchData = async (userCity, userCountry, type) => {
   const result = await axios({
     method: "get",
-    url: `https://www.meetup.com/find/events/tech/?allMeetups=false&radius=50&userFreeform=${userCity}%2C+${userCountry}`,
+    url: `https://www.meetup.com/find/events/&=${type}/?allMeetups=false&radius=50&userFreeform=${userCity}%2C+${userCountry}`,
     json: true,
     headers: { 'User-Agent': 'Mozilla/5.0' },
   });
