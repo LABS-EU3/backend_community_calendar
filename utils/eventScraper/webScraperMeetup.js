@@ -3,10 +3,10 @@
 const cheerio = require('cheerio');
 const axios = require("axios");
 
-const fetchData = async () => {
+const fetchData = async (userCity, userCountry) => {
   const result = await axios({
     method: "get",
-    url: `https://www.meetup.com/find/events/tech/?allMeetups=false&radius=50&userFreeform=Abuja%2C+Nigeria`,
+    url: `https://www.meetup.com/find/events/tech/?allMeetups=false&radius=50&userFreeform=${userCity}%2C+${userCountry}`,
     json: true,
     headers: { 'User-Agent': 'Mozilla/5.0' },
   });
@@ -21,10 +21,14 @@ const scrapeEvents = (userCountry, userCity, eventType) => new Promise((resolve,
     const titlesArray = [];
     const linksArray = [];
     const dataSet = [];
+    const locationsArray = [];
+    const attendingArray = [];
 
     const dates = $('time').toArray();
     const titles = $('.resetLink.big.event.wrapNice.omnCamp.omngj_sj7e.omnrv_fe1').toArray();
     const links = $('.resetLink.big.event.wrapNice.omnCamp.omngj_sj7e.omnrv_fe1').toArray();
+    const locations = $('.resetLink.omnCamp.omngj_sj7ea.omnrv_fe1a').toArray();
+    const attendants = $('.attendee-count').toArray();
 
     dates.forEach((date) => {
       const dateString = $(date).attr('datetime');
@@ -43,11 +47,26 @@ const scrapeEvents = (userCountry, userCity, eventType) => new Promise((resolve,
       linksArray.push(linkString);
     });
 
+    locations.forEach((location) => {
+      const locationString = $(location).text().replace(/(\r\n|\n|\r)/gm, "");
+      locationsArray.push(locationString);
+    });
+
+    attendants.forEach((attendant) => {
+      const attendantString = $(attendant).text().replace(/(\r\n|\n|\r|\D)/gm, "");
+      attendingArray.push(attendantString);
+    });
+
     for (let i = titlesArray.length - 1; i >= 0; i--) {
       dataSet.push({
         title: newTitles[i],
         date: datesArray[i],
         link: linksArray[i],
+        location: locationsArray[i],
+        source: 'meetup',
+        city: userCity,
+        country: userCountry,
+        attending: attendingArray[i],
       });
     }
 
