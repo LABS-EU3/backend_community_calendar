@@ -3,6 +3,7 @@ const Event = require("./event.model");
 const scrapeEvents = require("../../utils/eventScraper/webScraperEventbrite");
 const scrapeByDate = require("../../utils/eventScraper/eventbriteByDate.js");
 const scrapeDescription = require("../../utils/eventScraper/scrapeEventbriteDesc");
+const imageUploader = require('../../utils/uploads');
 
 const findEvent = async () => {
   const events = await Event.find();
@@ -72,10 +73,29 @@ const findByDate = async (startDate, endDate, userCity, userCountry, eventType) 
   }
 };
 
+const createEvent = async (req, res) => {
+  const { file } = req;
+  if (file) {
+    try {
+      const { url } = await imageUploader(file);
+      req.body.imageUrl = url;
+    } catch (e) {
+      res.status(400).json({ message: 'Could not upload image' });
+    }
+  } else req.body.url = "";
+  try {
+    const newEvent = await new Event(req.body);
+    res.status(201).json(newEvent);
+  } catch (e) {
+    res.status(500).json({ message: e.message });
+  }
+};
+
 module.exports = {
   addScrapedEvent,
   findEvent,
   addDescription,
   findByDate,
   updateEventsByDates,
+  createEvent,
 };
