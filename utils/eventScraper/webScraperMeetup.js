@@ -61,7 +61,7 @@ const scrapeEvents = (userCountry, userCity, eventType) => new Promise((resolve,
     for (let i = titlesArray.length - 1; i >= 0; i--) {
       dataSet.push({
         name: newTitles[i],
-        eventDate: datesArray[i],
+        eventDate: new Date(datesArray[i]),
         scrapedEventLink: linksArray[i],
         location: locationsArray[i],
         source: 'meetup',
