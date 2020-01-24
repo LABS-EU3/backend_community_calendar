@@ -7,7 +7,7 @@ const axios = require("axios");
 const fetchData = async (userCity, userCountry, type) => {
   const result = await axios({
     method: "get",
-    url: `https://www.meetup.com/find/events/&=${type}/?allMeetups=false&radius=50&userFreeform=${userCity}%2C+${userCountry}`,
+    url: `https://www.meetup.com/find/events/${type}/?allMeetups=false&radius=50&userFreeform=${userCity}%2C+${userCountry}`,
     json: true,
     headers: { 'User-Agent': 'Mozilla/5.0' },
   });
@@ -60,9 +60,9 @@ const scrapeEvents = (userCountry, userCity, eventType) => new Promise((resolve,
 
     for (let i = titlesArray.length - 1; i >= 0; i--) {
       dataSet.push({
-        title: newTitles[i],
-        date: datesArray[i],
-        link: linksArray[i],
+        name: newTitles[i],
+        eventDate: datesArray[i],
+        scrapedEventLink: linksArray[i],
         location: locationsArray[i],
         source: 'meetup',
         city: userCity,
