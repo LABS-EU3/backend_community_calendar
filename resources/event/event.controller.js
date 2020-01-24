@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 const Event = require("./event.model");
-const scrapeEvents = require("../../utils/eventScraper/webScraperEventbrite");
+const scrapeEventbriteEvents = require("../../utils/eventScraper/webScraperEventbrite");
+const scrapeMeetUpEvents = require("../../utils/eventScraper/webScraperMeetup");
 const scrapeByDate = require("../../utils/eventScraper/eventbriteByDate.js");
 const scrapeDescription = require("../../utils/eventScraper/scrapeEventbriteDesc");
 
@@ -10,17 +11,23 @@ const findEvent = async () => {
 };
 
 const addScrapedEvent = async (userCountry, userCity, eventType) => {
-  const scrappedEventsArray = await scrapeEvents(userCountry, userCity, eventType);
-  if (scrappedEventsArray.length > 0) {
-    await Event.insertMany(scrappedEventsArray, (error, doc) => {
-      if (error) {
-        return error;
+  let scrappedEventsArray = [];
+  await Promise.all([scrapeEventbriteEvents(userCountry, userCity, eventType), scrapeMeetUpEvents(userCountry, userCity, eventType)])
+    .then((results) => {
+      scrappedEventsArray = results[0].concat(results[1]);
+      if (scrappedEventsArray.length > 0) {
+        Event.insertMany(scrappedEventsArray, (error, doc) => {
+          if (error) {
+            return error;
+          }
+          return doc;
+        });
+      } else {
+        return false;
       }
-      return doc;
-    });
-  } else {
-    return false;
-  }
+      return scrappedEventsArray;
+    })
+    .catch((error) => error);
   return scrappedEventsArray;
 };
 
