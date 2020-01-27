@@ -63,6 +63,21 @@ const addDescription = async (eventId, link) => {
   }
 };
 
+const updateEventById = async (id, payload) => {
+  try {
+    await Event.update(
+      { _id: id },
+      {
+        $set: payload,
+      },
+    );
+
+    return true;
+  } catch (error) {
+    return error;
+  }
+};
+
 const findByDate = async (startDate, endDate, userCity, userCountry, eventType) => {
   try {
     const events = await Event.find({
@@ -105,4 +120,5 @@ module.exports = {
   findByDate,
   updateEventsByDates,
   createEvent,
+  updateEventById,
 };

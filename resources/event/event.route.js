@@ -61,4 +61,18 @@ router.post("/fetch-date", async (req, res, next) => {
 
 router.post("/create-event", validator.validateImageType, uploadToMemory, validator.validateBody, eventController.createEvent);
 
+router.post("/update-event/:id", async (req, res) => {
+  try {
+    const update = await eventController.updateEventById(req.params.id, req.body);
+
+    if (update) {
+      res.status(200).json({ message: 'event updated successfully' });
+    } else {
+      res.status(400).json({ message: 'an error occurred' });
+    }
+  } catch (error) {
+    res.status(400).json("an error occurred");
+  }
+});
+
 module.exports = router;
