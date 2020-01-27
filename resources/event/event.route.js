@@ -3,6 +3,7 @@ const express = require("express");
 
 const router = express.Router();
 const eventController = require("./event.controller");
+const User = require('../users/users.model');
 const uploadToMemory = require("../../utils/uploads/upload");
 const validator = require('./event.validation');
 
@@ -54,6 +55,23 @@ router.post("/fetch-date", async (req, res, next) => {
       res.status(404).json("No events found for this date");
     }
     res.status(200).json(dbUpdate);
+  } catch (error) {
+    next(new Error(error));
+  }
+});
+
+router.delete('/delete-event', async (req, res, next) => {
+  try {
+    const { eventId, userId } = req.body;
+    const user = await User.findById({ id: userId });
+    if (!user) {
+      return res.status(400).json('User does not exist');
+    }
+    const deletedEvent = await eventController.deleteEvent(eventId);
+    if (!deletedEvent) {
+      return res.status(400).json("Event does not exist");
+    }
+    res.status(200).json(deletedEvent);
   } catch (error) {
     next(new Error(error));
   }

@@ -98,6 +98,15 @@ const createEvent = async (req, res) => {
   }
 };
 
+const deleteEvent = async (eventId) => {
+  try {
+    const deletedEvent = await Event.findOneAndDelete({ id: eventId });
+    return deletedEvent;
+  } catch (error) {
+    return error;
+  }
+};
+
 module.exports = {
   addScrapedEvent,
   findEvent,
@@ -105,4 +114,5 @@ module.exports = {
   findByDate,
   updateEventsByDates,
   createEvent,
+  deleteEvent,
 };
