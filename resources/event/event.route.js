@@ -71,7 +71,7 @@ router.delete('/delete-event', async (req, res, next) => {
     if (!deletedEvent) {
       return res.status(400).json("Event does not exist");
     }
-    res.status(200).json(deletedEvent);
+    res.status(200).json('Event successfully deleted');
   } catch (error) {
     next(new Error(error));
   }
