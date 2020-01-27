@@ -63,7 +63,7 @@ router.post("/fetch-date", async (req, res, next) => {
 router.delete('/delete-event', async (req, res, next) => {
   try {
     const { eventId, userId } = req.body;
-    const user = await User.findById({ id: userId });
+    const user = await User.findById({ _id: userId });
     if (!user) {
       return res.status(400).json('User does not exist');
     }

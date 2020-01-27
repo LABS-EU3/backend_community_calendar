@@ -115,7 +115,7 @@ const createEvent = async (req, res) => {
 
 const deleteEvent = async (eventId) => {
   try {
-    await Event.findOneAndDelete({ id: eventId });
+    await Event.findOneAndDelete({ _id: eventId });
     return true;
   } catch (error) {
     return error;
