@@ -82,17 +82,19 @@ const findByDate = async (startDate, endDate, userCity, userCountry, eventType) 
 
 const createEvent = async (req, res) => {
   const { file } = req;
+
   if (file) {
     try {
-      const { url } = await imageUploader(file);
-      req.body.imageUrl = url;
+      const response = await imageUploader(file);
+      req.body.imageUrl = response.url;
     } catch (e) {
-      res.status(400).json({ message: 'Could not upload image' });
+      res.status(400).json({ message: 'Could not create event.' });
     }
-  } else req.body.url = "";
+  } else req.body.imageUrl = "";
   try {
-    const newEvent = await new Event(req.body);
-    res.status(201).json(newEvent);
+    const newEvent = new Event(req.body);
+    const savedEvent = await newEvent.save();
+    res.status(201).json(savedEvent);
   } catch (e) {
     res.status(500).json({ message: e.message });
   }
