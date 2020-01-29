@@ -63,6 +63,21 @@ const addDescription = async (eventId, link) => {
   }
 };
 
+const updateEventById = async (id, payload) => {
+  try {
+    await Event.update(
+      { _id: id },
+      {
+        $set: payload,
+      },
+    );
+
+    return true;
+  } catch (error) {
+    return error;
+  }
+};
+
 const findByDate = async (startDate, endDate, userCity, userCountry, eventType) => {
   try {
     const events = await Event.find({
@@ -100,6 +115,15 @@ const createEvent = async (req, res) => {
   }
 };
 
+const deleteEvent = async (eventId) => {
+  try {
+    await Event.findOneAndDelete({ _id: eventId });
+    return true;
+  } catch (error) {
+    return error;
+  }
+};
+
 module.exports = {
   addScrapedEvent,
   findEvent,
@@ -107,4 +131,6 @@ module.exports = {
   findByDate,
   updateEventsByDates,
   createEvent,
+  deleteEvent,
+  updateEventById,
 };

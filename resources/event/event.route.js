@@ -3,6 +3,7 @@ const express = require("express");
 
 const router = express.Router();
 const eventController = require("./event.controller");
+const User = require('../users/users.model');
 const uploadToMemory = require("../../utils/uploads/upload");
 const validator = require('./event.validation');
 
@@ -59,6 +60,37 @@ router.post("/fetch-date", async (req, res, next) => {
   }
 });
 
+router.delete('/delete-event', async (req, res, next) => {
+  try {
+    const { eventId, userId } = req.body;
+    const user = await User.findById({ _id: userId });
+    if (!user) {
+      return res.status(400).json('User does not exist');
+    }
+    const deletedEvent = await eventController.deleteEvent(eventId);
+    if (!deletedEvent) {
+      return res.status(400).json("Event does not exist");
+    }
+    res.status(200).json('Event successfully deleted');
+  } catch (error) {
+    next(new Error(error));
+  }
+});
+
 router.post("/create-event", validator.validateImageType, uploadToMemory, validator.validateBody, eventController.createEvent);
+
+router.post("/update-event/:id", async (req, res) => {
+  try {
+    const update = await eventController.updateEventById(req.params.id, req.body);
+
+    if (update) {
+      res.status(200).json({ message: 'event updated successfully' });
+    } else {
+      res.status(400).json({ message: 'an error occurred' });
+    }
+  } catch (error) {
+    res.status(400).json("an error occurred");
+  }
+});
 
 module.exports = router;
