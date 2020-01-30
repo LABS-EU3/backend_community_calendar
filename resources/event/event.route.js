@@ -30,8 +30,8 @@ router.post("/fetch-events", async (req, res, next) => {
 
 router.post("/fetch-description", async (req, res, next) => {
   try {
-    const { link, eventId } = req.body;
-    const events = await eventController.addDescription(eventId, link);
+    const { link, eventId, type } = req.body;
+    const events = await eventController.addDescription(eventId, link, type);
     if (!events) {
       res.status(404).json("No description available for this event");
     }

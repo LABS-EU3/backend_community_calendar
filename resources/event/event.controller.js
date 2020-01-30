@@ -4,6 +4,7 @@ const scrapeEventbriteEvents = require("../../utils/eventScraper/webScraperEvent
 const scrapeMeetUpEvents = require("../../utils/eventScraper/webScraperMeetup");
 const scrapeByDate = require("../../utils/eventScraper/eventbriteByDate.js");
 const scrapeDescription = require("../../utils/eventScraper/scrapeEventbriteDesc");
+const scrapeMeetupDescription = require("../../utils/eventScraper/scrapeMeetupDesc");
 const imageUploader = require('../../utils/uploads');
 
 const findEvent = async () => {
@@ -47,9 +48,9 @@ const updateEventsByDates = async (userCountry, userCity, eventType, startDate, 
   return scrappedEventsArray;
 };
 
-const addDescription = async (eventId, link) => {
+const addDescription = async (eventId, link, type) => {
   try {
-    const description = await scrapeDescription(link);
+    const description = type === 'eventbrite' ? await scrapeDescription(link) : await scrapeMeetupDescription(link);
     await Event.update(
       { scrapedEventId: eventId },
       {
