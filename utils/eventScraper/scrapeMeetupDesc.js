@@ -49,7 +49,7 @@ const scrapeDescription = (link) => new Promise((resolve, reject) => {
       });
     }
 
-    resolve(dataSet);
+    resolve(dataSet[0]);
   }).catch((error) => reject(error));
 });
 

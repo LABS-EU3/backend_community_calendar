@@ -51,12 +51,14 @@ const updateEventsByDates = async (userCountry, userCity, eventType, startDate, 
 const addDescription = async (eventId, link, type) => {
   try {
     const description = type === 'eventbrite' ? await scrapeDescription(link) : await scrapeMeetupDescription(link);
-    await Event.update(
-      { scrapedEventId: eventId },
-      {
-        $set: { description: description.description },
-      },
-    );
+    if (eventId) {
+      await Event.update(
+        { scrapedEventId: eventId },
+        {
+          $set: { description: description.description },
+        },
+      );
+    }
 
     return description;
   } catch (error) {
