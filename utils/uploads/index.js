@@ -6,7 +6,7 @@ const config = require('./config');
 
 config();
 
-const uploadToCloud = (file) => (new Promise((resolve) => {
+const uploadToCloud = (file) => (new Promise((resolve, reject) => {
   /**
      * @description This function uploads to a file to the cloudinary storage
      * @param {Buffer} containing the file to be uploaded
@@ -19,13 +19,17 @@ const uploadToCloud = (file) => (new Promise((resolve) => {
     buffer,
   ).content;
 
-  uploader.upload(
-    fileUri,
-    (result) => {
-      resolve({ url: result.secure_url, id: result.public_id });
-    },
-    { resource_type: "auto" },
-  );
+  try {
+    uploader.upload(
+      fileUri,
+      (result) => {
+        resolve({ url: result.secure_url, id: result.public_id });
+      },
+      { resource_type: "auto" },
+    );
+  } catch (e) {
+    reject(e);
+  }
 }));
 
 module.exports = uploadToCloud;

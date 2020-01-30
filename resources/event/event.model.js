@@ -43,6 +43,9 @@ const EventSchema = new Schema({
   source: {
     type: String,
   },
+  author: {
+    type: mongoose.SchemaTypes.ObjectId,
+  },
 }, { timestamps: true });
 
 EventSchema.plugin(uniqueValidator);

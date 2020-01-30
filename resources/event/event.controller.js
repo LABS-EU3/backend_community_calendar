@@ -63,21 +63,6 @@ const addDescription = async (eventId, link) => {
   }
 };
 
-const updateEventById = async (id, payload) => {
-  try {
-    await Event.update(
-      { _id: id },
-      {
-        $set: payload,
-      },
-    );
-
-    return true;
-  } catch (error) {
-    return error;
-  }
-};
-
 const findByDate = async (startDate, endDate, userCity, userCountry, eventType) => {
   try {
     const events = await Event.find({
@@ -97,28 +82,21 @@ const findByDate = async (startDate, endDate, userCity, userCountry, eventType) 
 
 const createEvent = async (req, res) => {
   const { file } = req;
+
   if (file) {
     try {
-      const { url } = await imageUploader(file);
-      req.body.imageUrl = url;
+      const response = await imageUploader(file);
+      req.body.imageUrl = response.url;
     } catch (e) {
-      res.status(400).json({ message: 'Could not upload image' });
+      res.status(400).json({ message: 'Could not create event.' });
     }
-  } else req.body.url = "";
+  } else req.body.imageUrl = "";
   try {
-    const newEvent = await new Event(req.body);
-    res.status(201).json(newEvent);
+    const newEvent = new Event(req.body);
+    const savedEvent = await newEvent.save();
+    res.status(201).json(savedEvent);
   } catch (e) {
-    res.status(500).json({ message: e.message });
-  }
-};
-
-const deleteEvent = async (eventId) => {
-  try {
-    await Event.findOneAndDelete({ _id: eventId });
-    return true;
-  } catch (error) {
-    return error;
+    res.status(500).json({ message: e.message || 'Could not create event.' });
   }
 };
 
@@ -129,6 +107,4 @@ module.exports = {
   findByDate,
   updateEventsByDates,
   createEvent,
-  deleteEvent,
-  updateEventById,
 };
