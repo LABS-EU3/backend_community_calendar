@@ -3,8 +3,6 @@ const Joi = require('joi');
 
 exports.validateImageType = (req, res, next) => {
   const { file } = req;
-  console.log('req.file ----> ', req.file);
-  console.log('req.body ----> ', req.body);
 
   // This permits users to validate, when an image is not been uploaded.
   if (!file) return next();

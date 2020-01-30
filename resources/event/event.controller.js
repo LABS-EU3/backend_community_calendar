@@ -63,21 +63,6 @@ const addDescription = async (eventId, link) => {
   }
 };
 
-const updateEventById = async (id, payload) => {
-  try {
-    await Event.update(
-      { _id: id },
-      {
-        $set: payload,
-      },
-    );
-
-    return true;
-  } catch (error) {
-    return error;
-  }
-};
-
 const findByDate = async (startDate, endDate, userCity, userCountry, eventType) => {
   try {
     const events = await Event.find({
@@ -111,16 +96,7 @@ const createEvent = async (req, res) => {
     const savedEvent = await newEvent.save();
     res.status(201).json(savedEvent);
   } catch (e) {
-    res.status(500).json({ message: e.message });
-  }
-};
-
-const deleteEvent = async (eventId) => {
-  try {
-    await Event.findOneAndDelete({ _id: eventId });
-    return true;
-  } catch (error) {
-    return error;
+    res.status(500).json({ message: e.message || 'Could not create event.' });
   }
 };
 
@@ -131,6 +107,4 @@ module.exports = {
   findByDate,
   updateEventsByDates,
   createEvent,
-  deleteEvent,
-  updateEventById,
 };

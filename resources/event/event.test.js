@@ -43,8 +43,6 @@ describe("Event model", () => {
       //     .attach("image", path.resolve('./mocks/images/mock.png'))
       //     .field({ name: 'sample', description: 'some description' });
 
-      //   console.log(response.body)
-
       //   expect(response.type).toEqual("application/json");
       //   expect(response.status).toEqual(expectedStatusCode);
       // });
