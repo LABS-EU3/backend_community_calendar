@@ -5,6 +5,7 @@ const router = express.Router();
 const eventController = require("./event.controller");
 const User = require('../users/users.model');
 const uploadToMemory = require("../../utils/uploads/upload");
+const validateToken = require("../../utils/validateToken");
 const validator = require('./event.validation');
 
 
@@ -29,8 +30,8 @@ router.post("/fetch-events", async (req, res, next) => {
 
 router.post("/fetch-description", async (req, res, next) => {
   try {
-    const { link, eventId } = req.body;
-    const events = await eventController.addDescription(eventId, link);
+    const { link, eventId, type } = req.body;
+    const events = await eventController.addDescription(eventId, link, type);
     if (!events) {
       res.status(404).json("No description available for this event");
     }
@@ -60,16 +61,16 @@ router.post("/fetch-date", async (req, res, next) => {
   }
 });
 
-router.delete('/delete-event', async (req, res, next) => {
+router.delete('/delete-event', validateToken, async (req, res, next) => {
   try {
     const { eventId, userId } = req.body;
     const user = await User.findById({ _id: userId });
     if (!user) {
-      return res.status(400).json('User does not exist');
+      res.status(400).json('User does not exist');
     }
     const deletedEvent = await eventController.deleteEvent(eventId);
     if (!deletedEvent) {
-      return res.status(400).json("Event does not exist");
+      res.status(400).json("Event does not exist");
     }
     res.status(200).json('Event successfully deleted');
   } catch (error) {
@@ -77,7 +78,7 @@ router.delete('/delete-event', async (req, res, next) => {
   }
 });
 
-router.post("/create-event", validator.validateImageType, uploadToMemory, validator.validateBody, eventController.createEvent);
+router.post("/create-event", validateToken, validator.validateImageType, uploadToMemory, validator.validateBody, eventController.createEvent);
 
 router.post("/update-event/:id", async (req, res) => {
   try {
