@@ -1,24 +1,23 @@
 const FavEvent = require('./favEvents.model');
-const Event = require('../event/event.model');
+const mapper = require('../favEvents/favEvents.helpers');
 
 module.exports = {
   async findFav(userId) {
-    const favEventsIds = await FavEvent.find({ userId }, 'eventId userId', (err, docs) => {
-      if (err) {
-        return false;
-      }
-      return docs;
-    });
-    const result = await Promise.all(
-      favEventsIds.map((event) => Event.findOne({
-        scrapedEventId: event.eventId,
-      }, (err, doc) => {
-        if (err) return false;
-        return doc;
-      })),
-    )
-      .then((favEventsArr) => favEventsArr);
-    return result;
+    // Find all Fav Events for a user;
+    const favEventsIds = await FavEvent.find(
+      { userId }, (err, docs) => {
+        if (err) {
+          return false;
+        }
+        return docs;
+      },
+    );
+    // If they exist;
+    if (favEventsIds.length > 0) {
+      return mapper.mapAll(favEventsIds);
+    }
+    // If not, return the empty array, anyways
+    return favEventsIds;
   },
   async saveFav(eventId, userId) {
     const favedEvent = new FavEvent({ eventId, userId });
