@@ -5,7 +5,7 @@ const scrapeMeetUpEvents = require("../../utils/eventScraper/webScraperMeetup");
 const scrapeByDate = require("../../utils/eventScraper/eventbriteByDate.js");
 const scrapeDescription = require("../../utils/eventScraper/scrapeEventbriteDesc");
 const scrapeMeetupDescription = require("../../utils/eventScraper/scrapeMeetupDesc");
-const imageUploader = require('../../utils/uploads');
+const imageUploader = require("../../utils/uploads");
 
 const findEvent = async () => {
   const events = await Event.find();
@@ -14,7 +14,10 @@ const findEvent = async () => {
 
 const addScrapedEvent = async (userCountry, userCity, eventType) => {
   let scrappedEventsArray = [];
-  await Promise.all([scrapeEventbriteEvents(userCountry, userCity, eventType), scrapeMeetUpEvents(userCountry, userCity, eventType)])
+  await Promise.all([
+    scrapeEventbriteEvents(userCountry, userCity, eventType),
+    scrapeMeetUpEvents(userCountry, userCity, eventType),
+  ])
     .then((results) => {
       scrappedEventsArray = results[0].concat(results[1]);
       if (scrappedEventsArray.length > 0) {
@@ -33,8 +36,20 @@ const addScrapedEvent = async (userCountry, userCity, eventType) => {
   return scrappedEventsArray;
 };
 
-const updateEventsByDates = async (userCountry, userCity, eventType, startDate, endDate) => {
-  const scrappedEventsArray = await scrapeByDate(userCountry, userCity, eventType, startDate, endDate);
+const updateEventsByDates = async (
+  userCountry,
+  userCity,
+  eventType,
+  startDate,
+  endDate,
+) => {
+  const scrappedEventsArray = await scrapeByDate(
+    userCountry,
+    userCity,
+    eventType,
+    startDate,
+    endDate,
+  );
   if (scrappedEventsArray.length > 0) {
     await Event.insertMany(scrappedEventsArray, (error, doc) => {
       if (error) {
@@ -50,7 +65,9 @@ const updateEventsByDates = async (userCountry, userCity, eventType, startDate, 
 
 const addDescription = async (eventId, link, type) => {
   try {
-    const description = type === 'eventbrite' ? await scrapeDescription(link) : await scrapeMeetupDescription(link);
+    const description = type === "eventbrite"
+      ? await scrapeDescription(link)
+      : await scrapeMeetupDescription(link);
     if (eventId) {
       await Event.update(
         { scrapedEventId: eventId },
@@ -66,7 +83,13 @@ const addDescription = async (eventId, link, type) => {
   }
 };
 
-const findByDate = async (startDate, endDate, userCity, userCountry, eventType) => {
+const findByDate = async (
+  startDate,
+  endDate,
+  userCity,
+  userCountry,
+  eventType,
+) => {
   try {
     const events = await Event.find({
       eventDate: {
@@ -91,7 +114,7 @@ const createEvent = async (req, res) => {
       const response = await imageUploader(file);
       req.body.imageUrl = response.url;
     } catch (e) {
-      res.status(400).json({ message: 'Could not create event.' });
+      res.status(400).json({ message: "Could not create event." });
     }
   } else req.body.imageUrl = "";
   try {
@@ -99,7 +122,7 @@ const createEvent = async (req, res) => {
     const savedEvent = await newEvent.save();
     res.status(201).json(savedEvent);
   } catch (e) {
-    res.status(500).json({ message: e.message || 'Could not create event.' });
+    res.status(500).json({ message: e.message || "Could not create event." });
   }
 };
 
