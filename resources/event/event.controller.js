@@ -20,7 +20,7 @@ const addScrapedEvent = (userCountry, userCity, eventType) => new Promise((resol
     scrapeMeetUpEvents(userCountry, userCity, eventType),
   ]).then((results) => {
     scrappedEventsArray = results[0].concat(results[1]);
-    if (scrappedEventsArray && scrappedEventsArray > 0) {
+    if (scrappedEventsArray && scrappedEventsArray.length > 0) {
       // Insert scrapped data to database.
       Event.insertMany(scrappedEventsArray, { ordered: false });
     }
