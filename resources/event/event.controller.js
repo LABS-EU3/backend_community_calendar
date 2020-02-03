@@ -126,11 +126,37 @@ const createEvent = async (req, res) => {
   }
 };
 
+const deleteEvent = async (eventId) => {
+  try {
+    await Event.findOneAndDelete({ _id: eventId });
+    return true;
+  } catch (error) {
+    return error;
+  }
+};
+
+const updateEventById = async (id, payload) => {
+  try {
+    await Event.update(
+      { _id: id },
+      {
+        $set: payload,
+      },
+    );
+
+    return true;
+  } catch (error) {
+    return error;
+  }
+};
+
 module.exports = {
   addScrapedEvent,
   findEvent,
   addDescription,
   findByDate,
+  deleteEvent,
   updateEventsByDates,
   createEvent,
+  updateEventById,
 };
