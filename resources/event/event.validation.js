@@ -25,6 +25,7 @@ exports.validateBody = (req, res, next) => {
     country: Joi.string(),
     eventDate: Joi.date(),
     author: Joi.string(),
+    scrapedEventId: Joi.string(),
   });
 
   const { error } = Joi.validate(req.body, schema);
