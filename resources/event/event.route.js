@@ -94,4 +94,18 @@ router.post("/update-event/:id", async (req, res) => {
   }
 });
 
+router.post("/get-event/:id", validateToken, async (req, res) => {
+  try {
+    const events = await eventController.getEventByUserId(req.params.id);
+
+    if (events) {
+      res.status(200).json(events);
+    } else {
+      res.status(400).json({ message: 'an error occurred' });
+    }
+  } catch (error) {
+    res.status(400).json("an error occurred");
+  }
+});
+
 module.exports = router;

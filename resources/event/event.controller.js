@@ -150,6 +150,15 @@ const updateEventById = async (id, payload) => {
   }
 };
 
+const getEventByUserId = async (id) => {
+  try {
+    const event = await Event.find({ id });
+    return event;
+  } catch (error) {
+    return false;
+  }
+};
+
 module.exports = {
   addScrapedEvent,
   findEvent,
@@ -159,4 +168,5 @@ module.exports = {
   updateEventsByDates,
   createEvent,
   updateEventById,
+  getEventByUserId,
 };
