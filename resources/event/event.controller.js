@@ -152,7 +152,7 @@ const updateEventById = async (id, payload) => {
 
 const getEventByUserId = async (id) => {
   try {
-    const event = await Event.find({ id });
+    const event = await Event.find({ author: id });
     return event;
   } catch (error) {
     return false;
