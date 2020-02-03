@@ -12,29 +12,23 @@ const findEvent = async () => {
   return events;
 };
 
-const addScrapedEvent = async (userCountry, userCity, eventType) => {
+const addScrapedEvent = (userCountry, userCity, eventType) => new Promise((resolve, reject) => {
   let scrappedEventsArray = [];
-  await Promise.all([
+
+  Promise.all([
     scrapeEventbriteEvents(userCountry, userCity, eventType),
     scrapeMeetUpEvents(userCountry, userCity, eventType),
-  ])
-    .then((results) => {
-      scrappedEventsArray = results[0].concat(results[1]);
-      if (scrappedEventsArray.length > 0) {
-        Event.insertMany(scrappedEventsArray, (error, doc) => {
-          if (error) {
-            return error;
-          }
-          return doc;
-        });
-      } else {
-        return false;
-      }
-      return scrappedEventsArray;
-    })
-    .catch((error) => error);
-  return scrappedEventsArray;
-};
+  ]).then((results) => {
+    scrappedEventsArray = results[0].concat(results[1]);
+    if (scrappedEventsArray && scrappedEventsArray > 0) {
+      // Insert scrapped data to database.
+      Event.insertMany(scrappedEventsArray, { ordered: false });
+    }
+    if (scrappedEventsArray && Array.isArray(scrappedEventsArray)) resolve(scrappedEventsArray);
+
+    reject(new Error('Events are undefined or not an array!'));
+  }).catch(reject);
+});
 
 const updateEventsByDates = async (
   userCountry,
