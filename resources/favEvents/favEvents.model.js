@@ -11,7 +11,29 @@ const FavEventSchema = new Schema({
     type: String,
     required: true,
   },
-}, { timestamps: true });
+  scrapedEventId: {
+    type: String,
+    default: null,
+  },
+}, { timestamps: true })
+  .pre('save', (next) => {
+    const self = this;
+
+    // eslint-disable-next-line no-use-before-define
+    FavEvent.findOne(
+      { eventId: self.eventId, userId: self.userId },
+      // eslint-disable-next-line consistent-return
+      (err, favEvent) => {
+        if (err) return next(err);
+        if (favEvent) {
+          self.invalidate("eventId", "eventId,userId combination must be unique");
+          next(new Error("You have already have this event saved"));
+        } else {
+          next();
+        }
+      },
+    );
+  });
 
 FavEventSchema.plugin(uniqueValidator);
 

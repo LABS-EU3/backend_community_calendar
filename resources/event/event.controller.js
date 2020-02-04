@@ -18,15 +18,23 @@ const addScrapedEvent = (userCountry, userCity, eventType) => new Promise((resol
   Promise.all([
     scrapeEventbriteEvents(userCountry, userCity, eventType),
     scrapeMeetUpEvents(userCountry, userCity, eventType),
-  ]).then((results) => {
+  ]).then(async (results) => {
     scrappedEventsArray = results[0].concat(results[1]);
     if (scrappedEventsArray && scrappedEventsArray.length > 0) {
-      // Insert scrapped data to database.
-      Event.insertMany(scrappedEventsArray, { ordered: false });
-    }
-    if (scrappedEventsArray && Array.isArray(scrappedEventsArray)) resolve(scrappedEventsArray);
-
-    reject(new Error('Events are undefined or not an array!'));
+      let allScrapedEvents = [];
+      const query = { country: userCountry, city: userCity, eventType };
+      try {
+        // Insert scrapped data to database.
+        await Event.insertMany(scrappedEventsArray, { ordered: false });
+        // If all succeed get data from database
+        allScrapedEvents = await Event.find(query);
+        resolve(allScrapedEvents);
+      } catch (e) {
+      // If some inserts fails get all data from database
+        allScrapedEvents = await Event.find(query);
+        resolve(allScrapedEvents);
+      }
+    } else reject(new Error('Events are undefined or not an array!'));
   }).catch(reject);
 });
 
@@ -152,6 +160,7 @@ const getEventByUserId = async (id) => {
     return false;
   }
 };
+
 
 module.exports = {
   addScrapedEvent,
