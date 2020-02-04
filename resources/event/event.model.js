@@ -5,7 +5,6 @@ const { Schema } = mongoose;
 const EventSchema = new Schema({
   name: {
     type: String,
-    required: true,
     minlength: 2,
     unique: true,
   },

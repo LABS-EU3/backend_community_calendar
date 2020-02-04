@@ -20,11 +20,11 @@ router.post("/fetch-events", async (req, res, next) => {
     if (!events) {
       res
         .status(500)
-        .json("Events could not be inserted or they already exist");
+        .json({ message: "Events could not be inserted or they already exist" });
     }
     res.status(200).json(events);
   } catch (error) {
-    next(new Error(error));
+    next(error);
   }
 });
 
