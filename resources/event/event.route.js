@@ -94,7 +94,7 @@ router.post("/update-event/:id", async (req, res) => {
   }
 });
 
-router.post("/get-event/:id", validateToken, async (req, res) => {
+router.post("/get-event/:id", async (req, res) => {
   try {
     const events = await eventController.getEventByUserId(req.params.id);
 
