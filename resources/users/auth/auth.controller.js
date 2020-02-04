@@ -67,21 +67,27 @@ module.exports = function (Model) {
 
       const { username, password } = req.body;
 
-      const userInDB = await Model.findOne({ username });
+      try {
+        const userInDB = await Model.findOne({ username });
 
-      if (!userInDB) {
-        return res.status(400).send("Invalid username or password");
+        if (!userInDB) {
+          return res.status(400).send("Invalid username or password");
+        }
+
+        const userPassword = await bcrypt.compare(password, userInDB.password);
+
+        if (!userPassword) {
+          return res.status(400).send("Incorrect email or password.");
+        }
+
+        return res.status(200).json({
+          user: AuthHelper.Auth.toAuthJSON(userInDB),
+        });
+      } catch (e) {
+        return res.status(500).json({
+          message: e.message || 'Could not login user',
+        });
       }
-
-      const userPassword = await bcrypt.compare(password, userInDB.password);
-
-      if (!userPassword) {
-        return res.status(400).send("Incorrect email or password.");
-      }
-
-      return res.status(200).json({
-        user: AuthHelper.Auth.toAuthJSON(userInDB),
-      });
     },
   };
 };

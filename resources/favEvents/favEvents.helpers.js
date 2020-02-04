@@ -34,18 +34,16 @@ module.exports = {
   mapAllDocs(arr) {
     // Convert mongosse ids from string to mongoose object type.
     const arrOfIds = arr.map(({ eventId }) => mongoose.Types.ObjectId(eventId));
-
     const query = {
       _id: {
-        $in: arrOfIds,
-      // eslint-disable-next-line comma-dangle
-      }
+        // eslint-disable-next-line comma-dangle
+        $in: arrOfIds
+      },
     };
 
     return new Promise((resolve, reject) => {
       Event.find(query, (err, favEvents) => {
         if (err) reject(err);
-
         resolve(favEvents);
       });
     });
